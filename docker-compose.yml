@@ -1,0 +1,9 @@
+version: "3"
+services:
+  html_to_pdf:
+    build: .
+    container_name: html_to_pdf
+    volumes:
+      - .:/code
+    ports:
+      - "3000:3000"
