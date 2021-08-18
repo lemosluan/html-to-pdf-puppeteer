@@ -5,7 +5,7 @@ POC generate pdf from html with puppeteer and express with docker and docker-com
 ## How to use
 
 ### Start server
-`docker-composer up -d`
+`docker-compose up -d`
 
 ### Try: 
 
