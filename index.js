@@ -14,8 +14,8 @@ app.get("/", async (req, res) => {
     width = null,
     height = null
   ) => {
-    width = parseInt(width, 10) ?? 1650;
-    height = parseInt(height, 10) ?? 800;
+    width = parseInt(width, 10) ?? 1310;
+    height = parseInt(height, 10) ?? 750;
 
     const browser = await puppeteer.launch({
       args: [
@@ -23,6 +23,7 @@ app.get("/", async (req, res) => {
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
       ],
+      headless: true
     });
     filename += (filename + "").includes(".pdf") ? "" : ".pdf";
     const page = await browser.newPage();
@@ -31,6 +32,7 @@ app.get("/", async (req, res) => {
     await page.pdf({
       path,
       ...(format ? { format } : {}),
+      printBackground: true,
       width,
       height,
     });
