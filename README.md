@@ -32,3 +32,6 @@ http://localhost:3030?url=https://google.com.br&filename=printgoogle.pdf
 
 
 `format`: see options on [puppeteer_pagepdfoptions](https://github.com/puppeteer/puppeteer/blob/v10.2.0/docs/api.md#pagepdfoptions) (format has priority above width and height)
+
+
+`timeout`: timeout to wait page after full load (for wait external async content, like a api request) (default: 3000)

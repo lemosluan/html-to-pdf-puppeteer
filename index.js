@@ -19,7 +19,8 @@ app.get("/", async (req, res) => {
       ],
       headless: true,
     });
-    const finalFilename = filename + ((filename + "").includes(".pdf") ? "" : ".pdf");
+    const finalFilename =
+      filename + ((filename + "").includes(".pdf") ? "" : ".pdf");
     const page = await browser.newPage();
     await page.setViewport({ width: 1366, height: 768 });
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -47,7 +48,6 @@ app.get("/", async (req, res) => {
     timeout: req.query.timeout || 3000,
   };
   const file = await crawler(params);
-  console.log({file, filename: params.filename});
 
   res.download(file, `${params.filename}.pdf`);
 });
