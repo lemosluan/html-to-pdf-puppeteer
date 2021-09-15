@@ -7,13 +7,7 @@ const app = express();
 app.set("view engine", "pug");
 
 app.get("/", async (req, res) => {
-  const crawler = async (
-    url,
-    filename = null,
-    format = null,
-    width = null,
-    height = null
-  ) => {
+  const crawler = async ({ url, filename, format, width, height, timeout }) => {
     width = parseInt(width, 10) ?? 1310;
     height = parseInt(height, 10) ?? 750;
 
@@ -23,12 +17,14 @@ app.get("/", async (req, res) => {
         "--disable-setuid-sandbox",
         "--disable-dev-shm-usage",
       ],
-      headless: true
+      headless: true,
     });
-    filename += (filename + "").includes(".pdf") ? "" : ".pdf";
+    const finalFilename = filename + ((filename + "").includes(".pdf") ? "" : ".pdf");
     const page = await browser.newPage();
+    await page.setViewport({ width: 1366, height: 768 });
     await page.goto(url, { waitUntil: "networkidle2" });
-    const path = `/tmp/${filename}`;
+    await page.waitForTimeout(timeout);
+    const path = `/tmp/${finalFilename}`;
     await page.pdf({
       path,
       ...(format ? { format } : {}),
@@ -41,14 +37,19 @@ app.get("/", async (req, res) => {
     return path;
   };
 
-  const url = req.query.url;
-  let filename = req.query.filename ?? uuidv4();
-  const format = req.query.format;
-  const width = req.query.width;
-  const height = req.query.height;
-  const file = await crawler(url, filename, format, width, height);
+  const params = {
+    url: req.query.url,
+    filename: req.query.filename || uuidv4(),
+    width: app,
+    format: req.query.format,
+    width: req.query.width,
+    height: req.query.height,
+    timeout: req.query.timeout || 3000,
+  };
+  const file = await crawler(params);
+  console.log({file, filename: params.filename});
 
-  res.download(file, `${filename}.pdf`);
+  res.download(file, `${params.filename}.pdf`);
 });
 
 app.listen(process.env.PORT || 3030);
